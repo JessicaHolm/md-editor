@@ -1,11 +1,9 @@
 [package]
-name = "md-editor"
+name = "mdeditor"
 version = "0.1.0"
 authors = ["Jason Holm <holmjason2@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-rocket = "0.4.2"
-rocket_contrib = "0.4.2"
+yew = "*"
 comrak = "*"
-horrorshow = "*"

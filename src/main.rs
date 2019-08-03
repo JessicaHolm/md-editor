@@ -1,70 +1,61 @@
-#![feature(proc_macro_hygiene, decl_macro)]
-
-#[macro_use]
-extern crate rocket;
-
-use std::fs::File;
-use std::io;
-use std::io::Write;
-use std::path::Path;
-
+use yew::prelude::*;
+use yew::{html, Component, ComponentLink, Html, Renderable, ShouldRender};
 use comrak::{markdown_to_html, ComrakOptions};
-use horrorshow::helper::doctype;
-use horrorshow::{html, Raw};
-use rocket::http::RawStr;
-use rocket::request::Form;
-use rocket::response::{NamedFile, Redirect};
 
-#[derive(FromForm)]
-struct UserInput {
-    input: String,
+pub struct Model {
+    value: String,
 }
 
-impl UserInput {
-    fn new(text: &str) -> UserInput {
-        let input = text.to_string();
-        UserInput { input }
+pub enum Msg {
+    GotInput(String),
+    Clicked,
+}
+
+impl Component for Model {
+    type Message = Msg;
+    type Properties = ();
+
+    fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
+        Model { value: "".into() }
     }
 
-    fn render(&self, text: &str) -> String {
-        format!(
-            "{}",
-            html!(
-                : doctype::HTML;
-                html {
-                    body {
-                        : Raw(markdown_to_html(text, &ComrakOptions::default()))
-                    }
-                }
-            )
-        )
+    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+        match msg {
+            Msg::GotInput(new_value) => {
+                self.value = new_value;
+            }
+            Msg::Clicked => {
+                self.value = "blah blah blah".to_string();
+            }
+        }
+        true
     }
 }
 
-#[post("/", data = "<text>")]
-fn markdown(text: Form<UserInput>) -> Result<Redirect, File> {
-    let user = UserInput::new(text.input.as_str());
-    let rendered = user.render(&user.input);
-
-    let mut file = File::create(Path::new("display")).expect("Error");
-    file.write_all(rendered.as_bytes()).expect("Error");
-    Ok(Redirect::to("display"))
-}
-
-#[get("/<filename>")]
-fn display(filename: &RawStr) -> Result<File, std::io::Error> {
-    File::open(filename.as_str())
-}
-
-#[get("/")]
-fn index() -> io::Result<NamedFile> {
-    NamedFile::open("static/index.html")
-}
-
-fn rocket() -> rocket::Rocket {
-    rocket::ignite().mount("/", routes![index, markdown, display])
+impl Renderable<Model> for Model {
+    fn view(&self) -> Html<Self> {
+        html! {
+            <div>
+                <div>
+                    <textarea rows=20
+                        cols=70
+                        value=&self.value
+                        oninput=|e| Msg::GotInput(e.value)
+                        placeholder="Type markdown here.">
+                    </textarea>
+                </div>
+                <div>
+                    <p>
+                    {markdown_to_html(&self.value, &ComrakOptions::default())}
+                    </p>
+                </div>
+            </div>
+        }
+    }
 }
 
 fn main() {
-    rocket().launch();
+    yew::initialize();
+    App::<Model>::new().mount_to_body();
+    yew::run_loop();
 }
