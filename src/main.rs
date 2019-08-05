@@ -1,61 +1,20 @@
-use yew::prelude::*;
-use yew::{html, Component, ComponentLink, Html, Renderable, ShouldRender};
-use comrak::{markdown_to_html, ComrakOptions};
+use stdweb::web::{document, IParentNode};
+use mdeditor::{Model, Msg};
+use yew::html::Scope;
+use yew::App;
 
-pub struct Model {
-    value: String,
-}
-
-pub enum Msg {
-    GotInput(String),
-    Clicked,
-}
-
-impl Component for Model {
-    type Message = Msg;
-    type Properties = ();
-
-    fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
-        Model { value: "".into() }
-    }
-
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
-        match msg {
-            Msg::GotInput(new_value) => {
-                self.value = new_value;
-            }
-            Msg::Clicked => {
-                self.value = "blah blah blah".to_string();
-            }
-        }
-        true
-    }
-}
-
-impl Renderable<Model> for Model {
-    fn view(&self) -> Html<Self> {
-        html! {
-            <div>
-                <div>
-                    <textarea rows=20
-                        cols=70
-                        value=&self.value
-                        oninput=|e| Msg::GotInput(e.value)
-                        placeholder="Type markdown here.">
-                    </textarea>
-                </div>
-                <div>
-                    <p>
-                    {markdown_to_html(&self.value, &ComrakOptions::default())}
-                    </p>
-                </div>
-            </div>
-        }
-    }
+fn mount_app(selector: &'static str, app: App<Model>) -> Scope<Model> {
+    let element = document().query_selector(selector).unwrap().unwrap();
+    app.mount(element)
 }
 
 fn main() {
     yew::initialize();
-    App::<Model>::new().mount_to_body();
+    let markdown = App::new();
+    let html = App::new();
+    let mut to_markdown = mount_app(".markdown", markdown);
+    let mut to_html = mount_app(".html", html);
+    to_markdown.send_message(Msg::SetScope(to_html.clone()));
+    to_html.send_message(Msg::SetScope(to_markdown.clone()));
     yew::run_loop();
 }
