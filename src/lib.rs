@@ -26,7 +26,7 @@ impl Component for Model {
         Model { 
             scope: None,
             //selector: "",
-            value: "Nothing".into(),
+            value: "".into(),
         }
     }
 
@@ -52,6 +52,7 @@ impl Component for Model {
 impl Renderable<Model> for Model {
     fn view(&self) -> Html<Self> {
         let html = html! {
+            <html>
             <div>
                 <textarea rows=20 cols=70
                 value=&self.value
@@ -59,21 +60,25 @@ impl Renderable<Model> for Model {
                 placeholder="Type markdown here.">
                 </textarea>
             </div>
+            </html>
         };
         
-        let node = document().get_element_by_id("second");
-        let x = match node {
-            Some(_) => "Hello",
-            None => "World",
-        };
-        //let node = document().get_element_by_id("second").unwrap();
-        let parent_node = node.unwrap().parent_node().unwrap();
+        let node = document().get_element_by_id("second").unwrap();
+        let parent_node = node.parent_node().unwrap();
         let new_node = document().create_element("div").unwrap();
-        //let md = markdown_to_html(&self.value, &ComrakOptions::default());
-        new_node.append_html(x);
+        let md = &markdown_to_html(&self.value, &ComrakOptions::default());
+        //node.set_node_value(Some(""));
+        let last = match &self.value.chars().last() {
+            Some(n) => n.to_string(),
+            None => "".to_string(),
+        };
+        //node.append_html(&last);
+        new_node.set_attribute("id", "second");
+        new_node.set_attribute("class", "html");
         parent_node.replace_child(&new_node, &node);
         
-        //document().body().unwrap().append_child(&new_node);
+        new_node.append_html(md);
+        //document().body().unwrap().append_child(&node);
         
         html
     }
