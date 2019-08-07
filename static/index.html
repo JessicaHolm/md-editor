@@ -1,12 +1,39 @@
 <!doctype html>
 <html>
   <head>
-    <title>Markdown Rust</title>
+    <style>
+    body {
+      font: 16px "Verdana", sans-serif;
+    }
+    textarea {
+      border: none;
+      font: 16px "Verdana", sans-serif;
+      width: 100%;
+    }
+    .split {
+      height: 100%;
+      width: 50%;
+      position: fixed;
+      z-index: 1;
+      top: 0;
+    }
+    .left {
+      left: 0;
+      padding-top: 15px;
+      padding-left: 20px;
+    }
+    .right {
+      right: 0;
+      padding-left: 20px;
+      background-color: rgb(214, 213, 210);
+    }
+    </style>
+    <title>Markdown Editor</title>
   </head>
   <body>
     <script src="/mdeditor.js"></script>
-    <div id="first" class="markdown"></div>
-    <div id="second" class="html"></div>
+    <div id="first" class="markdown split left"></div>
+    <div id="second" class="html split right"></div>
   </body>
 </html>
 

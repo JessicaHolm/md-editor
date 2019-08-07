@@ -1,5 +1,8 @@
+mod markdown;
+
+use markdown::*;
+
 use stdweb::web::{document, IParentNode};
-use mdeditor::{Model, Msg};
 use yew::html::Scope;
 use yew::App;
 
