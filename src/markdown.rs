@@ -1,43 +1,23 @@
-//use std::convert::TryInto;
-//use std::convert::From;
-
 use yew::{html, Component, ComponentLink, Html, Renderable, ShouldRender};
 use yew::html::Scope;
 
-use stdweb::js;
 use stdweb::traits::*;
 use stdweb::web::document;
-use stdweb::web::html_element::TextAreaElement;
-use stdweb::Value;
-use stdweb::Value::Null;
-use stdweb::unstable::TryFrom;
 
 use comrak::{markdown_to_html, ComrakOptions};
 
-pub const INITAL_TEXT: &str = "# Hello World\nThis is a simple markdown editor written in Rust. It support standard Markdown features such as:\n\n **bold** and *italic* text.\n\n* Bullet points\n* Another bullet point\n1. Numbered lists\n2. Second item\n3. Third item\n\nCode blocks are also supported.\n\n```\nfn main() {\n    println!(\"Hello world\");\n}\n```";
-
-//pub struct MyTextArea(TextAreaElement);
+pub const INITAL_TEXT: &str = "# Hello World\n---\n\nThis is a simple Markdown editor written in Rust. It supports standard Markdown features such as:\n\n **bold** and *italic* text.\n\n* Bullet points\n* Another bullet point\n1. Numbered lists\n2. Second item\n3. Third item\n\nCode blocks are also supported.\n\n```\nfn main() {\n    println!(\"Hello world\");\n}\n```\n\nLinks are supported as well [this](https://github.com/JasonHolm/md-editor) is the link to this project's GitHub page.\n\nLastly, you can embed images. Here is the GitHub logo.\n\n![Github Logo](https://cdn.iconscout.com/icon/free/png-256/github-153-675523.png)";
 
 pub struct Model {
     scope: Option<Scope<Model>>,
     value: String,
-    area: Value,
 }
 
 pub enum Msg {
     SetScope(Scope<Model>),
     GotInput(String),
     SetText(String),
-    Clicked,
 }
-
-/*
-impl From<Element> for MyTextArea {
-    fn from(value: Element) -> Self {
-        MyTextArea(value)
-    }
-}
-*/
 
 impl Component for Model {
     type Message = Msg;
@@ -46,8 +26,7 @@ impl Component for Model {
     fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
         Model { 
             scope: None,
-            value: "".to_string(),
-            area: Null,
+            value: INITAL_TEXT.to_string(),
         }
     }
 
@@ -61,13 +40,9 @@ impl Component for Model {
                     .as_mut()
                     .unwrap()
                     .send_message(Msg::SetText(text));
-                self.area = js! { document.getElementById("area") };
             }
             Msg::SetText(new_value) => {
                 self.value = new_value;
-            }
-            Msg::Clicked => {
-                js! { document.getElementById("upload").click() };
             }
         }
         true
@@ -79,27 +54,14 @@ impl Renderable<Model> for Model {
         let html = html! {
             <html>
             <div>
-            <form>
-                <img src="https://icon-library.net/images/file-upload-icon/file-upload-icon-18.jpg" onclick=|_| Msg::Clicked height="32" width="32" style="cursor:pointer" />
-                <input type="file" id="upload" style="display:none"/>
-            </form>
-            </div>
-            <div>
-                <textarea rows=30 cols=100 id="area" value=&self.value oninput=|e| Msg::GotInput(e.value) placeholder="Type markdown here.">
+                <textarea id="area" value=&self.value oninput=|e| Msg::GotInput(e.value) placeholder="Type markdown here.">
                 </textarea>
             </div>
             </html>
         };
         
-        
-        
-        let v = self.area.clone();
-        let x = TextAreaElement::try_from(v).unwrap(); //broken line
-        //let y = x.value();
-        //if &y != &self.value {
-            render(&self.value);
-            display_info(&self.value);
-        //}
+        render(&self.value);
+        display_info(&self.value);
         html
     }
 }
