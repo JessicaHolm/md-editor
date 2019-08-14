@@ -1,10 +1,17 @@
+// This program is licensed under the "MIT License". Please
+// see the file `LICENSE` for license terms.
+
+// Code adapted from the yew examples page
+// https://github.com/yewstack/yew/tree/master/examples/two_apps
+
 mod markdown;
 
 use markdown::*;
 
-use stdweb::web::{document, IParentNode};
 use yew::html::Scope;
 use yew::App;
+
+use stdweb::web::{document, IParentNode};
 
 fn mount_app(selector: &'static str, app: App<Model>) -> Scope<Model> {
     let element = document().query_selector(selector).unwrap().unwrap();

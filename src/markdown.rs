@@ -1,5 +1,11 @@
-use yew::{html, Component, ComponentLink, Html, Renderable, ShouldRender};
+// This program is licensed under the "MIT License". Please
+// see the file `LICENSE` for license terms.
+
+// Code adapted from the yew examples page
+// https://github.com/yewstack/yew/blob/master/examples/textarea/src/lib.rs
+
 use yew::html::Scope;
+use yew::{html, Component, ComponentLink, Html, Renderable, ShouldRender};
 
 use stdweb::traits::*;
 use stdweb::web::document;
@@ -23,13 +29,15 @@ impl Component for Model {
     type Message = Msg;
     type Properties = ();
 
+    // Create a new Model with initialized values.
     fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
-        Model { 
+        Model {
             scope: None,
             value: INITAL_TEXT.to_string(),
         }
     }
 
+    // Whenever something changes update the Model's fields.
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::SetScope(scope) => {
@@ -50,29 +58,30 @@ impl Component for Model {
 }
 
 impl Renderable<Model> for Model {
+    // Redraw the screen after a change occurs.
     fn view(&self) -> Html<Self> {
-        let html = html! {
+        render(&self.value);
+        display_info(&self.value);
+        html! {
             <html>
             <div>
-                <textarea id="area" value=&self.value oninput=|e| Msg::GotInput(e.value) placeholder="Type markdown here.">
+                <textarea value=&self.value oninput=|e| Msg::GotInput(e.value) placeholder="Type markdown here.">
                 </textarea>
             </div>
             </html>
-        };
-        
-        render(&self.value);
-        display_info(&self.value);
-        html
+        }
     }
 }
 
+// Count the number of characters, words, and lines.
 fn calculate_info(value: &str) -> String {
-    let w: usize = value.split_whitespace().count();
     let c: usize = value.chars().count();
+    let w: usize = value.split_whitespace().count();
     let l: usize = value.lines().count();
-    format!("{} characters, {} words, {} lines",c, w, l)
+    format!("{} characters, {} words, {} lines", c, w, l)
 }
 
+// Render the plain text on the left to Markdown on the right.
 fn render(value: &str) {
     let node = document().get_element_by_id("second").unwrap();
     let parent_node = node.parent_node().unwrap();
@@ -84,6 +93,7 @@ fn render(value: &str) {
     new_node.append_html(md).unwrap();
 }
 
+// Display the info bar at the bottom of the screen.
 fn display_info(value: &str) {
     let node = document().get_element_by_id("third").unwrap();
     let parent_node = node.parent_node().unwrap();
