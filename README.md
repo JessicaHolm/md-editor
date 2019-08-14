@@ -6,7 +6,8 @@ It relies on [Yew](https://github.com/yewstack/yew), [stdweb](https://github.com
 
 ## Example
 Here's a screenshot of the program running.
-![example](/md-editor-example.png)
+
+![example](./md-editor-example.png)
 
 ## Build and Run
 This program runs via cargo-web.
