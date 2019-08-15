@@ -2,7 +2,7 @@
 Copyright (c) 2019 Jason Holm
 
 This program is a basic Markdown editor as a web application.
-It relies on [Yew](https://github.com/yewstack/yew), [stdweb](https://github.com/koute/stdweb) and [comrak](https://github.com/kivikakk/comrak).
+It relies on [Yew](https://github.com/yewstack/yew), [stdweb](https://github.com/koute/stdweb), and [comrak](https://github.com/kivikakk/comrak).
 
 ## Example
 Here's a screenshot of the program running.
@@ -17,7 +17,16 @@ This program runs via cargo-web.
 cargo install cargo-web
 ```
 
-## License
+### Build
+```bash
+cargo web build
+```
 
+### Run
+```bash
+cargo web start
+```
+
+## License
 This program is licensed under the "MIT License". Please
 see the file `LICENSE` for license terms.
