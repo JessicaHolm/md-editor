@@ -27,6 +27,13 @@ cargo web build
 cargo web start
 ```
 
+## Testing
+Tests also run via cargo-web.
+
+```bash
+cargo web test
+```
+
 ## License
 This program is licensed under the "MIT License". Please
 see the file `LICENSE` for license terms.

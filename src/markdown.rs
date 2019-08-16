@@ -1,3 +1,4 @@
+// Copyright (c) 2019 Jason Holm
 // This program is licensed under the "MIT License". Please
 // see the file `LICENSE` for license terms.
 
@@ -12,7 +13,7 @@ use stdweb::web::document;
 
 use comrak::{markdown_to_html, ComrakOptions};
 
-pub const INITAL_TEXT: &str = "# Hello World\n---\n\nThis is a simple Markdown editor written in Rust. It supports standard Markdown features such as:\n\n **bold** and *italic* text.\n\n* Bullet points\n* Another bullet point\n1. Numbered lists\n2. Second item\n3. Third item\n\nCode blocks are also supported.\n\n```\nfn main() {\n    println!(\"Hello world\");\n}\n```\n\nLinks are supported as well [this](https://github.com/JasonHolm/md-editor) is the link to this project's GitHub page.\n\nLastly, you can embed images. Here is the GitHub logo.\n\n![Github Logo](https://cdn.iconscout.com/icon/free/png-256/github-153-675523.png)";
+pub const INITIAL_TEXT: &str = "# Hello World\n---\n\nThis is a simple Markdown editor written in Rust. It supports standard Markdown features such as:\n\n **bold** and *italic* text.\n\n* Bullet points\n* Another bullet point\n1. Numbered lists\n2. Second item\n3. Third item\n\nCode blocks are also supported.\n\n```\nfn main() {\n    println!(\"Hello world\");\n}\n```\n\nLinks are supported as well [this](https://github.com/JasonHolm/md-editor) is the link to this project's GitHub page.\n\nLastly, you can embed images. Here is the GitHub logo.\n\n![Github Logo](https://cdn.iconscout.com/icon/free/png-256/github-153-675523.png)";
 
 pub struct Model {
     scope: Option<Scope<Model>>,
@@ -33,7 +34,7 @@ impl Component for Model {
     fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
         Model {
             scope: None,
-            value: INITAL_TEXT.to_string(),
+            value: INITIAL_TEXT.to_string(),
         }
     }
 
@@ -103,4 +104,24 @@ fn display_info(value: &str) {
     new_node.set_attribute("class", "bottom").unwrap();
     parent_node.replace_child(&new_node, &node).unwrap();
     new_node.append_html(info).unwrap();
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_short() {
+        assert_eq!(
+            "5 characters, 1 words, 1 lines".to_string(),
+            calculate_info("Hello")
+        );
+    }
+    #[test]
+    fn test_initial() {
+        assert_eq!(
+            "576 characters, 79 words, 26 lines".to_string(),
+            calculate_info(INITIAL_TEXT)
+        );
+    }
 }
