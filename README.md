@@ -1,5 +1,5 @@
 # Markdown Editor
-Copyright (c) 2019 Jason Holm
+Copyright (c) 2019 Jessica Holm
 
 This program is a basic Markdown editor as a web application.
 It relies on [Yew](https://github.com/yewstack/yew), [stdweb](https://github.com/koute/stdweb), and [comrak](https://github.com/kivikakk/comrak).
